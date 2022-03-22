@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="A Post on my Personal Blog"/>
+    <meta name="keywords" content="blog, opinion, technology, hacking, coding, programming"/>
+    <meta name="robots" content="nofollow"/>
+    <meta http-equiv="author" content="Anton Hibl"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <title>Dynamic JSON Events</title>
+    <link rel="stylesheet" href="/blogtemplate.css"></style>
+</head>
+<body>
+    <section id="title">
+        <h1 id="text-title">{{.Title}}</h1>
+        <time id="timestamp">
+		    {{.Timestamp}}
+        </time>
+    </section>
+    <nav role="navigation" id="site-nav">
+        <ul id="sitemap">
+        </ul>
+    </nav>
+    <main role="main" id="main">
+		{{.ParsedMain}}
+    </main>
+    <footer role="contentinfo" id="footer">
+        <form id="contact-form" role="form">
+        <address>
+            Contact me by <a id="my-email" href="mailto:antonhibl11@gmail.com" class="my-email">e-mail</a>
+        </address>
+        </form>
+    </footer>
+<script defer src="/blogtemplate.js">
+</script>
+</body>
+</html>

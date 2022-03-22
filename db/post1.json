@@ -1,0 +1,21 @@
+{
+    "title" : "Finished My First Blog App",
+    "timestamp": "Friday, March 18th, 11:39 AM",
+    "main": [
+        "It took me awhile to tidy everything up but I finally finished creating my first ",
+        "blog app using Go along with JSON for my database. I plan on using this to document ",
+        "my own thoughts and experiences as a programmer and cybersecurity researcher; things ",
+        "like tutorials, thought-pieces, and journals on my own projects progress will be ",
+        "posted here. I look forward to getting more used to writing and sharing my own story, ",
+        "I think it will help me learn from doing and also hearing feedback from others.<br><br>",
+        "I utilized a handler function to dynamically read from my JSON database and template ",
+        "data into my HTML template using the go html/template package as well as the encoding/json ",
+        "to handling reading those objects. Next I had to make sure my CSS and JavaScript assets ",
+        "would be served alongside this finished template in order for my styling to be output into ",
+        "the browser. For this I used a FileServer function which allowed for me to serve linked ",
+        "resources in my HTML boilerplate and have the server still locate blog resources dynamically. ",
+        "Going forward I am looking to add better styling, more JavaScript elements to the page, and ",
+        "more functionality to how my JSON data is encoded and parsed in order to create more complex ",
+        "looking pages and blog posts."
+    ]
+}

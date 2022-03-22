@@ -1,0 +1,28 @@
+{
+    "title" : "Looking into more CSS and JS",
+    "timestamp": "Saturday, March 19th, 10:07 PM",
+    "main": [
+        "I have been learning more about object-oriented programming and design patterns",
+        "and am excited to find ways to implement these ideas into some of my Go, JavaScript,",
+        "and TypeScript to make this server more dynamic. I also have been reading and drafting",
+        "more designs and ideas for the styling and CSS for the server and am planning to clean",
+        "that up soon. Overall I am looking forward to whats to come for this server, it will",
+        "probably take awhile to get to where I want but it is a lot of fun and I have been",
+        "learning a ton in the whole process. My least favorite part so far would have to be",
+        "working with vanilla javascript; this is primarily because I had struggled to find a",
+        "way to connect to my JSON database easily and asynchronously. I need to read up more on",
+        "the language and practice a bit more, I have the feeling I was looking at the problem the",
+        "wrong way because it became easy to solve once I moved to solving it in my go backend. I",
+        "do plan on going back and practicing more with TypeScript and JavaScript, eventually I want",
+        "to build up the page UI primarily with the front end, letting the backend handle data.<br><br>",
+        "I am also getting ready to start a new job soon so I have been practicing with some Python and",
+        "C++ programming on the side to prepare for that. I have worked with Python in a work position",
+        "before and enjoyed it but I am really looking forward to the C++ portion and diving more into",
+        "that language professionally. I have experience with other object-oriented languages like",
+        "Swift, JavaScript/TypeScript, Python, and even Go to some extent; I also have programmed a lot",
+        "of C programs as I am a CyberSecurity student and that allows me to study a wide variety of",
+        "exploits and languages easily. I would like to eventually use what I learn with C++ to better",
+        "understand languages like C# and Swift. This would allow me to have a wider toolbox to exploit",
+        "and learn about mobile device and application security."
+    ]
+}
