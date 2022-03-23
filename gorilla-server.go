@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"html/template"
+	"io"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -53,6 +55,7 @@ func blog_handler(w http.ResponseWriter, r *http.Request) {
 		// if an error occurs return status
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+	log.Print("Blog served.")
 }
 
 func favicon_handler(w http.ResponseWriter, r *http.Request) {
@@ -62,16 +65,20 @@ func favicon_handler(w http.ResponseWriter, r *http.Request) {
 
 func teapot_handler(w http.ResponseWriter, r *http.Request) {
 	// return teapot state
+	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusTeapot)
 	// serve a teapot image with linkage
-	w.Write([]byte("<html><h1><a href='https://datatracker.ietf.org/doc/html/rfc2324/'>HTCPTP</h1><img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftaooftea.com%2Fwp-content%2Fuploads%2F2015%2F12%2Fyixing-dark-brown-small.jpg&f=1&nofb=1' alt='Im a teapot'></a><html>"))
+	log.Print("Tea Served.")
+	io.WriteString(w, "<html><h1><a href='https://datatracker.ietf.org/doc/html/rfc2324/'>HTCPTP</h1><img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftaooftea.com%2Fwp-content%2Fuploads%2F2015%2F12%2Fyixing-dark-brown-small.jpg&f=1&nofb=1' alt='Im a teapot'></a><html>")
 }
 
 func main() {
 	router := mux.NewRouter()
-	router.Handle("/", http.FileServer(http.Dir("/Users/cthulhu/l4p1s/languages/Go/net/gorilla-server")))
-	router.HandleFunc("/blog/", blog_handler)
-	router.HandleFunc("/favicon.ico", favicon_handler)
-	router.HandleFunc("/teapot", teapot_handler)
+	router.HandleFunc("/blog/post{number}", blog_handler).Methods("GET")
+	router.HandleFunc("/favicon.ico", favicon_handler).Methods("GET")
+	router.HandleFunc("/teapot", teapot_handler).Methods("GET")
+	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./"))))
 	http.Handle("/", router)
+	log.Print("Listening at http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

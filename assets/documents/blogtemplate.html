@@ -10,7 +10,141 @@
     <meta http-equiv="author" content="Anton Hibl"/>
     <meta http-equiv="pragma" content="no-cache"/>
     <title>Dynamic JSON Events</title>
-    <link rel="stylesheet" href="/blogtemplate.css"></style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=ZCOOL+QingKe+HuangYou&display=swap');
+
+html, body {
+    width:100%;
+    height: 100%;
+    background-color: rgb(26, 20, 33, 0.8);
+    overflow:auto;
+    margin: 0%;
+    aspect-ratio: 1920/1200;
+}
+
+body {
+    display: grid;
+    grid-template-areas: 
+    'header header header header header header'
+    'navbar mbody mbody mbody mbody mbody'
+    'fnotes fnotes fnotes fnotes fnotes fnotes';
+    gap: 1%;
+    margin: 0%;
+}
+
+
+@media screen and (max-width: 800px) {
+    html {
+        aspect-ratio: 1024/768;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    html {
+        aspect-ratio: 375/812;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+#title {
+    grid-area: header;
+    height: 100%;
+    width: 100%;
+}
+
+#text-title {
+    width: 100%;
+    height: 20%;
+    font-family:'ZCOOL QingKe HuangYou', cursive;
+    color: rgb(233,178,77);
+    text-align: center;
+    font-size: 48px;
+}
+
+time#timestamp {
+    display:block;
+    width: 100%;
+    height: 20%;
+    text-align: center;
+    font-family: 'ZCOOL QingKe HuangYou', cursive;
+    font-size: 11px;
+    color: rgb(236, 86, 125);
+}
+
+#name-color {
+    color: rgb(236, 86, 125);
+    font-style: normal;
+}
+
+:hover #text-title {
+    color: rgb(115, 229, 158);
+}
+
+#site-nav {
+    grid-area: navbar;
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+    list-style: none;
+}
+
+#main {
+    grid-area: mbody;
+    color:ghostwhite;
+    font-family: 'Libre Baskerville';
+    font-size: 14px;
+    text-align:center;
+    background-color: rgb(26, 20, 33, 0.4);
+    border-radius: 7px;
+    border-color: rgb(233,178,77);
+    border-width: 1%;
+    border-style: ridge;
+    width: 90%;
+    height: 100%;
+    padding: 2%;
+    margin-bottom: 5%;
+    justify-content: center;
+    align-content: center;
+}
+
+footer {
+    grid-area: fnotes;
+    width: auto;
+    height: 100%;
+    padding: 2%;
+    margin: 5%;
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+#content-info {
+    width: auto;
+    height: auto;
+    color:ghostwhite; 
+    font-family: 'Libre Baskerville', sans-serif;
+    font-size: 12px;
+    background-color: rgb(26, 20, 33, 0.4);
+    border-radius: 7px;
+    border-width: 1%;
+    border-style: ridge;
+    padding: 2%;
+    border-color: rgb(233,178,77);
+}
+
+#contact-form {
+    text-align:end;
+    width: 20%;
+    height: 100%;
+    color:ghostwhite;
+}
+
+#my-email {
+    color:springgreen;
+}
+    </style>
 </head>
 <body>
     <section id="title">
@@ -33,7 +167,7 @@
         </address>
         </form>
     </footer>
-<script defer src="/blogtemplate.js">
+<script defer>
 </script>
 </body>
 </html>
