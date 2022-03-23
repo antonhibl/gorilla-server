@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({showProcessingMessages: false,
+						   showMathMenu: false,
+						   messageStyle: "none",
+						   tex2jax: { inlineMath: [['$$','$$']], displayMath: [] },
+						   TeX: { Macros: {
+						   pgras: ["a^{2} + b^{2} = c^{2}", 0],
+
+						   }
+						   }});
+						   
+						   
+	</script>
+	
+	<script type="text/javascript" src="mathjax/MathJax.js?config=TeX-AMS_HTML"></script>
+	
+	<style>
+	
+	html {
+		font-size: 100.01%;
+	}
+	body {
+		font-family: "Palatino", "Times", "serif";
+		font-size: 100.01%;
+		margin: 12px;
+		text-size-adjust: none;
+	}
+	img {
+		max-width: 100% !important;
+	}
+	h1:first-child {
+		margin-top: 0;
+	}
+	p {
+		line-height: 1.4em;
+	}
+	a {
+		color: rgb(14,14,255);
+	}
+	ul li {
+		line-height: 1.4em;
+		font-size: 15px;
+	}
+	ol li {
+		line-height: 1.4em;
+		font-size: 15px;
+	}
+	dt {
+		font-weight: bold;
+	}
+	pre {
+		font-family: "Menlo";
+		background-color: #f8f8f8;
+		border: 1px solid #ddd;
+		padding: 3px 5px;
+		white-space: pre-wrap;
+	}
+	code {
+		font-family: "Menlo";
+		background-color: #f8f8f8;
+		border: 1px solid #ddd;
+		padding-left: 4px;
+		padding-right: 4px;
+	}
+	pre code {
+		border: 0;
+		padding: 0;
+	}
+	blockquote {
+		margin-top: 10px;
+		margin-bottom: 10px;
+		margin-left: 20px;
+		padding-left: 15px;
+		border-left: 2px solid #ccc;
+	}
+	table {
+		border-collapse: collapse;
+		border: 1px solid #ccc;
+		page-break-inside: avoid;
+	}
+	table th {
+		padding: 6px;
+		border-right: 1px solid #ccc;
+		background-color: #F8F8F8;
+	}
+	table td {
+		padding: 6px;
+		border-right: 1px solid #ccc;
+	}
+	table tr {
+		border-bottom: 1px solid #ccc;
+	}
+	hr {
+		border: 0;
+		border-color: #ccc;
+		border-style: solid;
+		border-width: 1px 0 0;
+		clear: both;
+		margin: 0;
+		height: 0;
+	}
+	figure {
+		display: inline-block;
+		margin: 0;
+	}
+	figcaption {
+		margin-top: 2px;
+		font-style: italic;
+		text-align: center;
+		color: #808080;
+	}
+	code.error {
+		background-color: #FFC4C4;
+		border-color: #B60000;
+		border-radius: 4px;
+		font-size: 13px;
+		padding: 2px;
+		margin-left: 4px;
+		margin-right: 4px;
+	}
+	
+	</style>
+</head>
+
+<body>
+
+<h1>The Discrete Logarithm Problem</h1>
+
+<p><strong>Author</strong>: <em>Anton Hibl</em></p>
+
+<hr />
+
+<blockquote><p>Given a prime <em>p</em>, a generator <em>m</em> of $$ \mathbb{Z}_p^* $$, and an element $$ c\in\mathbb{Z}_p^* $$, find the unique integer <em>e</em> with $$ 0 \leq e \leq p-2 $$ such that:</p>
+
+<p style="text-align:center;">$$ c \equiv m^e (mod\text{  }p) $$</p></blockquote>
+
+<p>This infamous cryptographic problem is typically referred to as simply <em>discrete log</em>. Here $$ e\equiv log_m(c)(mod\text{  }\text{  }p-1) $$. If <em>p</em> is a <em>&ldquo;properly chosen&rdquo;</em>, this becomes an extremely difficult problem to solve, especially if limited to classical computation methods. A potential flaw in this system comes with the advent of quantum computing technology; soon enough quantum algorithms will be able to efficiently factor larger and larger composite numbers, continuing to threaten the many classical forms of encryption widely used on the internet today. One such example of an already known quantum algorithm built to tackle this problem is Shor&rsquo;s Quantum Factoring Algorithm.</p>
+
+<p>Stepping away from the quantum algorithms for now I will focus on defining and explaining the problem classically so that one is able to identify and attack it&rsquo;s moving pieces in parts. One of the ways that <em>p</em> has to be chosen is to insist upon $$ p-1 $$ have at least one large prime factor. This is due to the Silver-Pohlig-Hellman Algorithm, which allows for fast and accurate calculations of discrete logs when $$ p-1 $$ has only small prime factors.</p>
+
+<hr />
+
+<h3>Classical &amp; Quantum Computational Hardness</h3>
+
+<hr />
+
+<blockquote><p>A computational problem is a question which can be solved or answered by performing enough computation, for example, &ldquo;is 938209 a prime number?&rdquo; or &ldquo;how long of a string is this sentence?&rdquo;.</p>
+
+<p><strong>Computational Hardness</strong> is the property of computing problems for which there are no algorithm which are able to run in a reasonable amount of time in order to solve the problem accurately. These sorts of problems are generally called <em>intractable problems</em> and are generally regarded as being practically impossible to solve using any known computing methods.</p></blockquote>
+
+<p>Computational hardness is wholly independent of the type of device performing the computations; this means it could be a general purpose computer, an integrated computing circuit, or even an entirely mechanical Turing machine. In computational complexity theory all computing devices are equivalent; i.e. if a problem can be solved accurately and efficiently using one device, then it can be recreated efficiently on any other computing device by porting it to that system &ndash; <em>An exception is quantum computing devices</em>.</p>
+
+<p>Generally, the study of complexity theory is grouped into 2 fields: structural complexity theory and the study of how algorithms are designed and analyzed. Structural complexity theorists aim to classify computational problems into categories based on their hardness in order to better understand their complexity and difficulty. Cryptanalysis is similar to the study of algorithmic design in how the problem of breaking a cipher algorithm is approached.</p>
+
+<hr />
+
+<h3>Time Estimates</h3>
+
+<hr />
+
+<p>One way of evaluating hardness is by measuring the complexity of an algorithm using its <strong><em>running time</em></strong>. The amount of time required for the execution of an algorithm on a computer is measured in terms of the <em>bit operations</em> which are performed. The standard bit operations are defined as follows: addition, subtraction, multiplication of 2 binary integers, division of a 2 bit integer by a 1 bit integer, or the shifting of a binary digit by one position. The number of bit operations which are necessary to perform an algorithm and it&rsquo;s computation is known as the <strong><em>computational complexity</em></strong> of the algorithm.</p>
+
+<p>Estimating the running time in this way doesn&rsquo;t account for time required to access memory or time to actually execute an instruction, thus it is still only an estimate. However because these are much faster than the bitwise operations they can largely be ignore especially when considering large numbers of bit arithmetic operations. Thus, while these estimates do not account for reading and writing to memory, this is actually a useful fact as it allows the estimate to retain it&rsquo;s <em>order of magnitude</em> between architectures; in short, the estimates show a computational time estimate across all types of devices, not just one.</p>
+
+<p>In order to analyze an algorithm, we do not need to know it&rsquo;s exact running time, rather we can simply compare it to other algorithms in order to get a reasonable idea of the efficiency given the worst possible inputs to solve using. The amount of time a computer will take to carry out a computation is essentially equal to the number of bit operations that are carried out, irrespective of the machine architecture due to the proportionality constant, the number of nanoseconds per bit operation.</p>
+
+<hr />
+
+<h3>Big O Notation</h3>
+
+<hr />
+
+<blockquote><p><em>Suppose that $$ f $$ and $$ g $$ are positive, real-valued functions. If there exists a positive real number $$ c $$ such that</em></p>
+
+<p style="text-align:center;">$$ f(x)<cg(x) $$</p>
+
+<p>for all sufficiently large $$ x $$, then</p>
+
+<p style="text-align:center;">$$ f(x)=O(g(x)) $$</p>
+
+<p>or in another form</p>
+
+<p style="text-align:center;">$$ f=O(g) $$</p></blockquote>
+
+<p>Big O Notation helps to convey the <em>order of magnitude of the complexity</em> of the algorithm, in other words it represents an upper limit on the number of bitwise operations required for the execution of an algorithm in the worst-case where inputs may be particularly hard or tricky to solve using.</p>
+
+<h4><em>Example</em></h4>
+
+<p>determine the number of bits in a base $$ b $$ integer. If $$ n $$ is a $$ t_n-\text{bit} $$ base $$ b $$ integer, then</p>
+
+<p style="text-align:center;">$$ b^{t_n-1}\leq n < b^{t_n} $$</p>
+
+<p>thus, $$ t_n=\lfloor\log_b{n}\rfloor +1 $$, so an estimate on the size of $$ t_n $$ is, generally, $$ t_n=O(\log_b{n}) $$. The logarithm&rsquo;s base, $$ b $$, is irrelevant in determining the complexity.</p>
+
+<blockquote><p><strong>Properties of Big O Notation</strong><br/>
+Given that $$ f $$ and $$ g $$ are positive, real-valued functions:</p>
+
+<ol type="a">
+<li>If $$ c\in\mathbb{R^+} $$, then $$ cO(g)=O(g) $$</li>
+<li>$$ O(\text{max}\{f,g\})=O(f)+O(g) $$</li>
+<li>$$ O(fg)=O(f)O(g) $$</li>
+</ol>
+</blockquote>
+
+<hr />
+
+<h3>Polynomial &amp; Superpolynomial Time</h3>
+
+<hr />
+
+<p>The $$ O(n^2) $$ complexity is a specific case for the larger class of polynomial complexities, or $$ O(n^k) $$, where <em>k</em> is some fixed number such as $$ 4 $$, $$ 6.947 $$, $$ \frac{1}{\sqrt{2}} $$. Polynomial time algorithms are the most important tool in a cryptographer&rsquo;s toolset, this is because these algorithms are provably feasible and usable in application. If an algorithm runs in <em>polynomial time</em>, it will complete its calculations in a reasonable amount of time even if the input is extremely large. In comparison, algorithms which run in <em>super-polynomial time</em>, or $$ O(f(n)) $$ where $$ f(n) $$ is any sort of function which grows faster than any polynomial one; generally these are considered to be inefficient at best and impractical in most cases. Super-polynomial is a somewhat contrived term to help describe the extra complexities found between polynomial time algorithms and exponential time algorithms.</p>
+
+<blockquote><p>An interesting aside is that exponential time complexity is not even the worst it could be. For example, it is possible for some complexities to grow even faster and therefore end up being even slower to compute; Examples of this would be the classes $$ O(n^n) $$ or $$ O(n^{f(n-1)}) $$.</p></blockquote>
+
+<p>A problem that cannot be solved using a polynomial time algorithm is considered to be intractable or in other words, <em>hard</em>. In order to make their lives simpler and the computing landscape more comprehensible, complexity theorists have gone and  categorized computational problems into respective groups or <em>complexity classes</em>, corresponding to the general effort needed to solve the problems.</p>
+
+<hr />
+
+<h3>Complexity Classes</h3>
+
+<hr />
+
+<p>In the mathematics of studying complexity theory, a <em>class</em> is a group of elements which hold similar attributes. For example, problems that can be solved in time $$ O(n^2) $$ are denoted as belonging to the class $$ \text{TIME}(n^2) $$. Similarly, the class of problems which can be solved in $$ O(n^3) $$ are denoted $$ \text{TIME}(n^3) $$ and the class which can be solved in $$ O(2^n) $$ is thus $$ \text{TIME}(2^n) $$. Because the laws of computation are derived based on the limits of classical physics, any problem which can be computed on one device, can be computed on any other given the proper time and resources. This in turn means a problem which can be solved on a super computer could also be solved on a laptop computer, and vice versa. Therefore any problem which belongs to the class $$ \text{TIME}(n^2) $$ also belongs to $$ \text{TIME}(n^3) $$ and so on; the union of all of these classes creates the complexity group commonly referred to as $$ P $$, meaning solvable in polynomial time.</p>
+
+<p>Generally, when designing an algorithm that will run on a computer or computational device we must not only consider the <em>time complexity</em> and how long it will take to run, but also the <em>space complexity</em> and how much memory the computation requires. This becomes crucial in larger problems as the time to access memory is substantially longer than the time it takes to perform a basic arithmetic operation.</p>
+
+<p>In defining the memory consumption requirements of an algorithm as a function of the length of the input data($$ n $$), it is easy to do the same with the time complexity of the algorithm. Meaning, the problems which are solvable using $$ f(n) $$ bits of memory storage space is $$ \text{SPACE}(f(n)) $$. Similar to how $$ P $$ is the union of all $$ \text{TIME}(n^k) $$ problems, $$ \text{PSPACE} $$ is the union of all $$ \text{SPACE}(n^k) $$ problems.</p>
+
+<p>In summary: any problem which is solvable in time $$ f(n) $$ requires at maximum $$ f(n) $$ memory, therefore $$ \text{TIME}(f(n)) $$ is also included in $$ \text{SPACE}(f(n)) $$. In the time group $$ f(n) $$ it is only possible to write up to $$ f(n) $$ bits at any given time, this is due to the assumption that 1 bit takes 1 unit of time to transfer. As a result, no problem in $$ \text{TIME}(f(n)) $$ can utilize more than $$ f(n) $$ memory space and $$ P $$ is a sub-group of $$ \text{PSPACE} $$.</p>
+
+<p>The other class of complexity problems which is of interest is known as $$ NP $$, standing for <em>non-deterministic</em> polynomial time. This is the class of problems in which solutions can be verified in polynomial time despite the solution being potentially hard to solve for and calculate. $$ NP $$ problems can be verified efficiently meaning that given a possible solution, some polynomial-time algorithm can be run that is able to verify whether you have found a valid solution to the problem. Another way to think of <strong>NP</strong> problems is as problems for which a guess at a solution can be tested and verified for correctness in polynomial time.</p>
+
+<hr />
+
+<h3>Informational vs. Computational Security</h3>
+
+<hr />
+
+<p>One of the primary focus points of this paper will be diving in-depth into the Informational and Computational security of the Discrete Logarithm problem. Given properly and carefully chose primes for the Discrete Logarithm Encryption Algorithm, the informational security is still not verifiable; however, given the primes have been carefully chosen the computational security is currently verifiably quite high.</p>
+
+<blockquote><p><strong>Informational Security</strong>:<br/>
+<em>Informational Security is based solely on whether it is possible to break a cipher at all</em>. What this means is that a cipher can only be secure informationally given that with unlimited computational time and memory it could never be broken at all. This would mean even a successful attack on the given cipher would take far too much time for any conceivable computation device to ever hope to find a solution even if it had the whole lifespan of our universe to perform its computing processes. In summary, if a cipher like this existed, it would then be a informationally <em>secure</em> cipher.</p>
+
+<p><strong>Computational Security</strong>:<br/>
+Instead of examining only the justifiability of an algorithm&rsquo;s solvability, computational security deems a cipher secure if it cannot be broken within a <em>practically reachable</em> amount of time, and with practical amounts of resources, such as components of computation like memory, hardware, budget, energy, and so on. Computational security is a way to justify and measure how secure a given cipher or algorithm actually is in a realistic setting.</p></blockquote>
+
+<p>Computational security generally consists of viewing a given algorithm as a function with two different parameters: $$ \textit{t} $$, <em>the limit of the number of operations a given attacker could perform</em>, and $$ \epsilon $$, <em>the limit of the likelihood of success for any performed attack on a given cipher</em>. The fact that these two parameters are both limits is not a coincidence; when a cipher or algorithm is ($$ \textit{t, }\epsilon $$)-<em>secure</em>, it means no attacker executing less than $$ \textit{t} $$ operations will be successful, with a probability of $$ \epsilon $$. This still doesn&rsquo;t mean or show that an attacker who performs $$ \textit{t} $$ operations will succeed, all $$ \textit{t} $$ represents is the <em>lower bound</em> of computation steps necessary at minimum to potentially compromise the cipher&rsquo;s security. A cryptanalyst would still need to determine how many computations would be required to indefinitely break the cipher&rsquo;s security.</p>
+
+<hr />
+
+<h3>P <em>vs.</em> NP</h3>
+
+<hr />
+
+<hr />
+
+<h3>The Factoring Problem</h3>
+
+<hr />
+
+<p>The <strong>Factoring Problem</strong> begins by solving for the prime numbers <em>p</em> and <em>q</em> when given a large number, <strong>N</strong>, the product of <em>p</em> and <em>q</em>. The Discrete Logarithm Algorithm bases itself and it&rsquo;s security in the fact that factoring such a number would be extremely difficult, especially when the chosen prime factors are specifically picked to be difficult to solve or impossible to solve with. The hardness of the factoring problem is what makes protocols such as the DLP and RSA so secure as they have proven to be <strong>NP</strong> problems classically.</p>
+
+<blockquote><p>A <strong>Prime Number</strong> is any number which is only divisible by itself and 1 evenly.<br/>
+A fundamental theorem known as the <strong>unique factorization theorem</strong> states that <strong><em>any natural number can be written as the product of prime numbers up to the order of the factors</em></strong>, a representation which is otherwise known as the <em>factorization</em> of that number.</p></blockquote>
+
+<p>Now, although any integer has a unique way of being formed as a product of primes, the problem is figuring out whether a given factorization contains only primes and/or whether a given prime number is truly a prime at all. Well-known polynomial-time primality testing algorithms are the best known modern methods for testing whether a given number is prime or if it is not. This is also an entirely different problem from uncovering the prime factors from a given number which is the harder part of the factoring problem.</p>
+
+<p>So <em>how would one go from a real number to its factorization</em>, in other words, <em>how can we decompose a real number as a product of prime numbers?</em></p>
+
+<p>The most simple way to factor a number $$ N $$ is to divide by all the numbers lower than it until you discover a number $$ x $$ which could divide $$ N $$. From this you can continue by dividing by more numbers, $$ x+1 $$ and so on, eventually revealing the factors of the number $$ N $$. Obviously this process would become extremely drawn out with large numbers and uncovers the hardness of the factoring problem given certain inputs.</p>
+
+<p>The length in bits of a given number $$ N $$ is found using $$ n = \text{log}_2(N) $$. Using the standard definition of a <strong>logarithm</strong>:</p>
+
+<p style="text-align:center;">$$ \text{log}_b(x)=y $$ if $$ b^y=x $$ while $$ x>0 $$ and $$ b>0 $$ and $$ b\neq 1 $$</p>
+
+<p>this means that $$ N=2^n $$. Due to the fact that all numbers less than $$ \frac{N}{2} $$ are sensible guesses for being possible factors of a number $$ N $$, there are roughly $$ N/2=\frac{2^n}{2} $$ values to test out. The complexity of such a simple factoring algorithm would therefore be $$ O(2^n) $$.</p>
+
+<p>While this is not ideal, this algorithm still allows for many cases in which the factors can be found for many numbers by starting and finding all of the small factors first and then iterating upwards while factoring any other non-prime factors. In Cryptography and especially the Discrete Logarithm Problem we are looking instead for factorizations of the form $$ p\cdot q = N $$, wherein $$ p $$ and $$ q $$ are generally extremely large for the direct purpose of being hard to solve for.</p>
+
+<p>To be more efficient and effective for the purposes of cryptanalysis, We do not need to try all numbers lower than $$ \frac{N}{2} $$ but instead only the prime factors which are also smaller than $$ \sqrt{N} $$. In fact, if $$ N $$ is not a prime, then it must also have at least one factor $$ \ell $$ which holds the property that $$ \ell < \sqrt{N} $$. This is due primarily to the fact that if both the factors of $$ N $$, $$ p $$ and $$ q $$,  are also greater than $$ \sqrt{N} $$, then their product would be larger than $$ \sqrt{N}\cdot\sqrt{N}=N $$, which would be impossible. In other words, this means that either $$ p $$ or $$ q $$ has to be smaller than the $$ \sqrt{N} $$.</p>
+
+<blockquote><p>In <em>Number Theory</em>, the most efficient(<em>fastest</em>) classical factoring algorithm known is the <strong>General Number Field Sieve</strong>(<em>GNFS</em>), it is utilized when factoring numbers larger than $$ 10^{100} $$. Mathematically, its complexity as an algorithm when solving for a number $$ n $$ is of the form:</p>
+
+<p style="text-align:center;">$$ e^{((\sqrt[3]{\frac{64}{9}+o(1)})(\ln n)^{\frac{1}{3}}(\ln \ln n)^{\frac{2}{3}})} $$</p></blockquote>
+
+<p>It is important to state that it is difficult to get a precise estimate for GNFS&rsquo;s actual complexity for a given number size, thus we must rely upon <em>heuristical complexity estimates</em> which show how security increases with a longer $$ n $$. For example:</p>
+
+<ul>
+<li>Factoring a <strong>1024-bit</strong> number, which has 2 prime factors which are around 500 bits each, will require roughly an order of $$ \small{2^{70}} $$ basic operations</li>
+<li>Factoring a <strong>2048-bit</strong> number, which has 2 prime factors which are around 1000 bits each, will require an order of $$ \small{2^{90}} $$ basic operations; this is about a million times more slow than the <em>1024-bit</em> number.</li>
+</ul>
+
+
+<p>Generally, the numbers being factored by researchers are shorter than the ones being factored in real applications, which are typically at least 1024-bits and often more than 2048-bits. To date, no one has reported the successful factoring of a 1024-bit number, not even with quantum computing algorithms.</p>
+
+<hr />
+
+<h3>Factoring and NP-Completeness</h3>
+
+<hr />
+
+<p>While we do not yet know a method to factor large numbers efficiently meaning the factoring problem does not belong to $$ P $$, factoring is definitely in $$ NP $$. We know this due to the fact that given a factorization of a number $$ N $$, the solution can be verified by checking that all of the factors are primes and that when multiplied together, the factors do give the expected real number $$ N $$.</p>
+
+<p>So this is a problem which is in $$ NP $$ and looks hard, however we aren&rsquo;t yet sure <em>whether it as hard as the hardest $$ NP $$ problems?</em> put another way, <em>can we know if factoring is <strong>NP-complete</strong>?</em></p>
+
+<p>There currently exists no proof which shows that factoring isn&rsquo;t <strong>NP</strong>-complete, however, this doesn&rsquo;t mean there isn&rsquo;t evidence to help support this theory. One of the first facts to consider is that all known NP-complete problems are capable of having one solution, more than one solution, or even no solution at all. Comparing factoring with this idea it is quickly recognizable that factoring has only one solution for any given input. To add to this, the composition of the mathematical structure of the factoring problem allows the general number field sieve to outperform most classical algorithms; this would be otherwise improbable aside from the structure of factorization problems allowing for the logic in the number field sieve to outperform slower primality testing algorithms.</p>
+
+<p>One of the ideas which I will be exploring in this paper is how quantum computation will allow for exponential speed-ups in factorization algorithms. This assumes that the factoring problem is indeed not NP-complete as if it were the technology of quantum computers would offer no speed-ups at all to the classical algorithms already being used. Because there is good evidence to support the fact that factorizing is not NP-complete, the idea that a quantum algorithm purposed to factor large numbers which could offer speed-ups to current factorization methods is still possible. Currently one of the main things which has prevented this is the fact that quantum computing technology is still in the <strong>NISQ</strong>(<em>Noisy Intermediate Scale Quantum</em>) era with error-corrected and controllable quantum computers still being another 15 to 20 years away as most estimates go. In summary, factoring may be slightly more easy to solve than other NP-complete problems, but for most cryptographers if you use large enough primes then the security provided is still very effective and in most cases is computationally secure.</p>
+
+<hr />
+
+<h3>A Primality Testing Algorithm in $$ P $$</h3>
+
+<hr />
+
+<p>Th following are the steps in an unconditional deterministic polynomial-time algorithm which performs a primality test for a given integer, $$ n $$. Let $$ \mathbb{Z_n} $$ for the given integer $$ n>1 $$ denote $$ \mathbb{Z}/n\mathbb{Z} $$ and if $$ h(X)\in \mathbb{Z_n}[X] $$, then:</p>
+
+<p style="text-align:center;">$$ f(X)\equiv g(X)(\mod{h(X)}, n) $$</p>
+
+<p>can be utilized to represent the equation $$ f(X) = g(X) $$ inside of the <em>quotient ring</em> $$ \mathbb{Z_n}[X]/(h(X)) $$. Specifically, for carefully chosen $$ r $$ and $$ a $$ values, the equation might look like:</p>
+
+<p style="text-align:center;">$$ (X+a)^n \equiv X^n + a (\mod{X^r}-1,n) $$</p>
+
+<blockquote><p><strong>The Algorithm</strong><br/>
+<em>input an integer $$ n > 1 $$ and execute the following steps:</em></p>
+
+<ol>
+<li>If $$ n=a^b $$ for some $$ a\in\mathbb{N} $$ and $$ b>1 $$, then terminate and end with the output <em>&ldquo;n is composite&rdquo;</em></li>
+<li>Find the smallest $$ r\in\mathbb{N} $$ where the $$ \text{ord}_r(n)>4\log^2_2n $$</li>
+<li>If $$ 1<\gcd(a,n)<n $$ for some $$ a\leq r $$, then output should return <em>&ldquo;n is composite&rdquo;</em></li>
+<li>If $$ n\leq r $$, then output should return <em>&ldquo;n is prime&rdquo;</em></li>
+<li>Set $$ a=1 $$ and perform the following:
+
+<ul>
+<li>compute $$ Y(a)\equiv (X+a)^n-X^n-a(\mod{X^r}-1,n) $$</li>
+<li>If $$ Y(a)\not\equiv 0(\mod{X^r}-1,n) $$, output should return <em>&ldquo;n is composite&rdquo;</em>, otherwise move to next step</li>
+<li>If $$ Y(a)\equiv 0(\mod{X^r}-1,n) $$, set $$ a=a+1 $$. If $$ a<\lfloor 2\sqrt{\phi(r)}\cdot \log_2{n}\rfloor $$, then go to step 1 of this section, otherwise move to step 6</li>
+</ul>
+</li>
+<li>Output should return <em>&ldquo;n is prime&rdquo;</em></li>
+</ol>
+</blockquote>
+
+<hr />
+
+<h3>Discrete Logarithms</h3>
+
+<hr />
+
+<p>Solving the discrete logarithm problem means calculating and determining the value of <em>x</em> in the equation:</p>
+
+<p style="text-align:center;">$$ g^x=z $$</p>
+
+<p>knowing that the generator <em>g</em> is a natural number in the group $$ Z^*_p $$, and <em>x</em> along with <em>p</em> are prime numbers. Solving for the x in this equation naturally leads unto solving for the <em>logarithm</em> of $$ x_g $$. The allowed solutions can only be in the set of natural numbers, meaning non-continuous and strictly integers.</p>
+
+<hr />
+
+<h3>Groups in the Discrete Logarithm Problem</h3>
+
+<hr />
+
+<p>In Mathematics, a <strong>group</strong> is a <em>set of numbers which meet the requirements of a number of axioms</em>, the axioms serve as criteria for what can and cannot be inside of the group. One of the groups that is commonly used by cryptographers employing the Discrete Logarithm Algorithm to protect their data, is the group $$ \mathbf{Z^*_p} $$. This is the group which contains all real numbers modulo a prime number p. typically both of these numbers are carefully chosen primes to ensure optimal security within a given cyclic group.</p>
+
+<blockquote><p>A <strong>Cyclic Group</strong> is a <em>group generated by a single element</em>, in our case the given real number which is also usually a large prime. Furthermore, a cyclic group is a set of invertible elements which together have a single binary operation which can associatively be applied to elements while remaining inside of the cyclic group. A cyclic group also contains an element g such that every other element of the group may be calculated by repeatedly applying the group operation mentioned previously to this element g or its inverse element g'.</p></blockquote>
+
+<p>Furthermore, to be a proper mathematical group, a set of numbers must also meet and follow the standards set by the following <em>axioms</em>:</p>
+
+<ul>
+<li><strong>Closure:</strong> for any given x and y in the group, the equation $$ x\cdot y $$ also results in a product which is still in the group.</li>
+<li><strong>Associativity:</strong>  For any <em>x</em>, <em>y</em>, <em>z</em> in the group, the equation $$ (x\cdot y)\cdot z = x\cdot (y\cdot z) $$ is true.</li>
+<li><strong>Identity Existence:</strong> there exists an element <em>e</em> which satisifies the equation $$ e\cdot x = x\cdot e = x $$. In any group $$ \mathbf{Z}^*_p $$, the identity element is 1.</li>
+<li><strong>Inverse Existence:</strong> For an element <em>x</em> inside of the group, there exists a <em>y</em> which satisfies the equation $$ x\cdot y = y\cdot x = e $$.</li>
+</ul>
+
+
+<p>I will return to the idea of a <em>cyclic group</em> in order to understand a crucial element of understanding the discrete logarithm problem. We know that a group is <em>cyclic</em> if there exists an element $$ g $$ whose powers modulo a prime number p span all of the group elements. The element $$ g $$ is then called a <em>generator</em> of the group. As an example consider the following:</p>
+
+<p>$$ Z^*_{17} $$ is cyclic and has a possible generator of 3, because</p>
+
+<p style="text-align:center;">$$ 3^0 \mod{17} = 1 $$<br/>
+$$ 3^1 \mod{17} = 3 $$<br/>
+$$ 3^2 \mod{17} = 9 $$<br/>
+$$ 3^3 \mod{17} = 10 $$<br/>
+$$ 3^4 \mod{17} = 13 $$<br/>
+$$ 3^5 \mod{17} = 5 $$<br/>
+$$ 3^6 \mod{17} = 15 $$<br/>
+$$ 3^7 \mod{17} = 11 $$<br/>
+$$ 3^8 \mod{17} = 16 $$<br/>
+$$ 3^9 \mod{17} = 14 $$<br/>
+$$ 3^{10} \mod{17} = 8 $$<br/>
+$$ 3^{11} \mod{17} = 7 $$<br/>
+$$ 3^{12} \mod{17} = 4 $$<br/>
+$$ 3^{13} \mod{17} = 12 $$<br/>
+$$ 3^{14} \mod{17} = 2 $$<br/>
+$$ 3^{15} \mod{17} = 6 $$<br/>
+$$ 3^{16} \mod{17} = 1 $$<br/>
+$$ 3^{17} \mod{17} = 3 $$</p>
+
+<p>this shows that by applying any given element as an exponent to our generator 3, we could span, or reach, any other element in the group.</p>
+
+<p>Another important aspect of the groups being used in the discrete logarithm algorithm is that they are <em>finite groups</em> with a limited or finite number of elements. That does not necessarily mean they are small groups by nature, simply that they rule out certain numbers based on limitations like bit lengths.</p>
+
+<hr />
+
+<h3>Modular Arithmetic</h3>
+
+<hr />
+
+<p>One of the most well known and widely utilized groups for discrete logarithms is $$ \mathbf{Z^*_p} $$, typically referred to as the group of real numbers modulo some prime <em>p</em>. This group&rsquo;s elements are known to be congruency classes when applied to the modulo <em>p</em>.</p>
+
+<blockquote><p><strong>Congruence Classes for the group $$ \mathbf{Z^*_p} $$</strong></p>
+
+<p>A set which is made up entirely of <strong>real numbers</strong> which are congruent with the expression <em>a</em> modulo <em>n</em>, is known as the <em>congruence class</em>, or the <em>residue</em> of the real number <em>a</em> modulo <em>n</em>.</p></blockquote>
+
+<p>The group product of 2 elements can be calculated by classical multiplication followed by a reduction modulo <em>p</em></p>
+
+<p>The <em>k</em>th power of one of the numbers in the group $$ \mathbf{Z^*_a} $$may be calculated by finding its <em>k</em>th power as an integer and then obtaining the remainder after division by p. When the integers involved are large, it is more efficient to reduce modulo p multiple times during the computation. Regardless of the specific algorithm used, this operation is called modular exponentiation. For example, consider ($$ \mathbf{Z^*_{17}} $$). To compute 34 in this group, calculate 34 = 81, and then divide 81 by 17, finding a remainder of 13. Therefore 34 is equal to 13 in the group of ($$ \mathbf{Z^*_{17}} $$).</p>
+
+<p><strong><em>The process which is the inverse operation of modular exponentiation is a process known as finding the discrete logarithm of a number, this has proven to be an extremely difficult problem to solve classically.</em></strong> In fact an important note is that not all discrete logarithms actually have solutions, this is because we must first remember that the only viable solutions are ones which are real numbers.</p>
+
+<p><strong>Example:</strong> Consider the group of non-zero integers <em>modulo 17</em> under <em>multiplication modulo 17</em>. This group has the following elements:</p>
+
+<p style="text-align:center;">$$G = \{1,2,3,4, \dots, 16\}.$$</p>
+
+<p>Since <em>17</em> is a prime, <em>G</em> is a cyclic group with a generator, which is called a <strong><em>primitive</em></strong> element. We first will show that <em>3</em> is a primitive element <em>modulo 17</em>.</p>
+
+<p style="text-align:center;">$$ 3^x \mod{17} \in Z^*_{17} $$</p>
+
+<p style="text-align:center;"><strong>becomes</strong></p>
+
+<p style="text-align:center;">$$ 3^{1} \mod{17} = 3 $$<br/>
+$$ 3^{2} \mod{17} = 9 $$<br/>
+$$ 3^{3} \mod{17} = 10 $$<br/>
+$$ \dots $$<br/>
+$$ 3^{k_n} \mod{17} = 3 $$</p>
+
+<p>where $$ k_n = 17 $$. This shows that using 3 as a primitive element we can show that 3 combined with the power of the groups modulus, 17, is actually equal to 3, meaning it returns itself. Meaning that by using 3 as our primitive element and generator, no matter what power we raise it towards, it will always remain inside of the cyclic group.</p>
+
+<p> Now it is easy to see how using this cyclic group we can derive a simple example for the Discrete Logarithm Problem:</p>
+
+<blockquote><p>Find the x values which make $$ a^x\equiv b\mod{n} $$, for example:</p>
+
+<p>for:</p>
+
+<p style="text-align:center;">$$ 3^x \mod{17} = 13 $$</p>
+
+<p>it follows that $$ x = 4 $$</p></blockquote>
+
+<p>While the above problem was admittedly straightforward, when using more obtuse bit numbers which are also primes the problem becomes exponentially harder extremely quickly; for example:</p>
+
+<blockquote><p>for:</p>
+
+<p style="text-align:center;">$$ 17^x \mod(2305843009213693951) = 1234048727048823394 $$</p>
+
+<p>becomes:</p>
+
+<p style="text-align:center;">$$ 17^x - 2305843009213693951 \lfloor{\frac{17^x}{2305843009213693951}}\rfloor = 1234048727048823394 $$</p>
+
+<p>it follows that for an integer solution for this equation is:</p>
+
+<p>$$ x = 209622091746699450 n + 8191 $$ where $$ n \in Z $$ and $$ n\geq0 $$</p>
+
+<p>This equation thus has 2 unknowns, <em>n</em> and <em>x</em> neither of which are easy to solve for.</p></blockquote>
+
+<hr />
+
+<h3>The Chinese Remainder Theorem</h3>
+
+<hr />
+
+<p>An important theorem involving certain systems of equations involved in modular arithmetic that are defined as follows:</p>
+
+<p style="text-align:center;">$$ x = r_1 \mod{n_1} $$<br/>
+$$ x = r_2 \mod{n_2} $$</p>
+
+<p>is known as the <strong>Chinese Remainder Theorem</strong>. This theorem says that any given system such as the one shown above, has a unique solution up to a certain modulus, it also provides a means of accurately determining this solution.</p>
+
+<blockquote><p><strong>Theorem:</strong> Let all $$ n_i\in\mathbb{N} $$ for the natural numbers $$ i\leq k\in\mathbb{N} $$ be relatively prime <em>pairwise</em>, now set:</p>
+
+<p style="text-align:center;">$$ n=\prod_{j=1}^k{n_j} $$</p>
+
+<p>and let $$ r_i\in\mathbb{Z} $$ for $$ i\leq k $$. Then the system of <em>k</em> simultaneous linear congruences found by</p>
+
+<p style="text-align:center;">$$ x\equiv r_1 (mod\text{  }\text{  }n_1) $$</p>
+
+<p style="text-align:center;">$$ x\equiv r_1 (mod\text{  }\text{  }n_2) $$</p>
+
+<p style="text-align:center;">&hellip;</p>
+
+<p style="text-align:center;">$$ x\equiv r_k(mod\text{  }\text{  }n_k) $$</p>
+
+<p>has a unique solution <em>modulo n</em>.</p></blockquote>
+
+<p><strong>Proof:</strong></p>
+
+<hr />
+
+<h3>Belphegor&rsquo;s Prime used to demonstrate</h3>
+
+<hr />
+
+<p>Consider the equation:</p>
+
+<p style="text-align:center;">$$ 17^x\mod{8191}=667 $$</p>
+
+<p>an alternate form of this could be shown as:</p>
+
+<p style="text-align:center;">$$ 17^x-8191\lfloor \frac{17^x}{8191}\rfloor = 667 $$</p>
+
+<p>and in rearranging to solve for x while also limiting to solutions which are integers, we get:</p>
+
+<p style="text-align:center;">$$ x = 8190n+281, n\in\mathbb{Z}, n\geq 0 $$</p>
+
+<blockquote><p>When plotting this function on the cartesian plane this we find:</p>
+
+<p style="text-align:center;"><center><figure><img src="archimedes://Screen%20Shot%202021-10-22%20at%202.12.55%20PM.png" alt="Plot of 17^x mod(8191) = 667 " /><figcaption>Plot of 17<sup>x</sup> mod(8191) = 667 </figcaption></figure></center></p></blockquote>
+
+<p>If you continue solving for integer solutions using the aforementioned equation you find a set of possible solutions which could be verified:</p>
+
+<p style="text-align:center;">$$ x_1 = 8471 $$<br/>
+$$ x_2 = 16661 $$<br/>
+$$ x_3 =  24851 $$</p>
+
+<p>In our case the solution would be $$ 16661 $$, a special prime which is known as a <em>Belphegorian Prime</em>. A <em>Belphegorian Prime</em> is a special palindromic prime number that reads the exact same both backwards and forwards and is surrounded by superstition due to it&rsquo;s inclusion of the number 666.</p>
+
+<p>Using small primes for this example, the purpose was to show how the discrete logarithm problem looks at a basic level so that we can understand how larger bit length primes contribute to a much more tricky system of possible solutions. Consider the following:</p>
+
+<p style="text-align:center;">$$ 22^x\mod{2305843009213693951} = 1470369944113241831 $$</p>
+
+<p>which is equivalent to the following alternate form:</p>
+
+<p style="text-align:center;">$$ 22^x-2305843009213693951\lfloor \frac{22^x}{2305843009213693951}\rfloor =  1470369944113241831 $$</p>
+
+<hr />
+
+<h3>The Silver-Pohlig-Hellman Algorithm for Calculating Discrete Logarithms</h3>
+
+<hr />
+
+<blockquote><p>let $$ \alpha $$ be a generator of $$ \mathbb{Z}_p^* $$ and let $$ \beta\in\mathbb{Z}_p^* $$, and assume that we have a factorization:</p>
+
+<p style="text-align:center;">$$ p-1=\prod_{j=1}^r{p_j^{a_j}} $$</p>
+
+<p>where, $$ a_j\in\mathbb{N} $$ and the $$ p_j $$ are distinct primes.</p></blockquote>
+
+<hr />
+
+<h3>The Transcendental DLP Algorithm</h3>
+
+<hr />
+
+<p>This method for performing an encryption key generation protocol closely related to the classical discrete logarithm problem and Diffie-Hellman Problem was first mentioned in <em>CITATION NEEDED</em>.</p>
+
+<p>Suppose an initial transcendental parameter, $$ x\in\mathbb{P}\setminus\mathbb{Q} $$, is utilized by both Alice and Bob as a shared parameter to generate public keys using corresponding private elements or keys to authenticate. The security of this algorithm increases if the $$ x $$ parameter is communicated over a secure channel, although it is said to be unnecessary to do so. The &ldquo;transcendental&rdquo; parameter being used can actually be applied as a number with a finite description, this is achieved with numbers such as $$ \pi $$ or $$ \sqrt{2} $$. From this point Alice will calculate a number:</p>
+
+<p style="text-align:center;">$$ a\prime = ax\mod{1} $$</p>
+
+<p>and Bob will correspondingly calculate:</p>
+
+<p style="text-align:center;">$$ b\prime = bx\mod{1} $$</p>
+
+<p>From here both Alice and Bob can calculate a key, $$ k $$, that is known to have the same value up to a certain floating point. To do this, now Alice sends her value, $$ a\prime $$, over to Bob via an open insecure channel and bob does the same with his value, $$ b\prime $$, back to Alice. Alice then calculates:</p>
+
+<p style="text-align:center;">$$ k = ab\prime\mod{1} $$</p>
+
+<p>and bob correspondingly calculates:</p>
+
+<p style="text-align:center;">$$ k=ba\prime\mod{1} $$</p>
+
+<blockquote><p><strong>The Algorithm:</strong></p>
+
+<hr />
+
+<p><em>input:</em> $$ s\in\mathbb{Z} $$ generated uniformly on $$ B_n $$<br/>
+<em>outputs:</em> a shared secret key, $$ k\in\mathbb{Q} $$ which is $$ n $$ binary digits in length</p>
+
+<p><strong><em>Alice&rsquo;s Procedure:</em></strong><br/>
+1. <code>$$ x\leftarrow F(s)\in\mathbb{R}\setminus\mathbb{Q} $$</code><br/>
+2. <code>Optional Step: $$ a $$ is chosen uniformly on $$ B_n $$</code><br/>
+3. <code>$$ a\prime\leftarrow ax\mod{1} $$</code><br/>
+4. <code>Exchange and send $$ a\prime $$ to Bob</code></p>
+
+<p><strong><em>Bob&rsquo;s Procedure:</em></strong><br/>
+1. <code>$$ x\leftarrow F(s)\in\mathbb{R}\setminus\mathbb{Q} $$</code><br/>
+2. <code>Optional Step: $$ b $$ is chosen uniformly on $$ B_n $$</code><br/>
+3. <code>$$ b\prime\leftarrow bx\mod{1} $$</code><br/>
+4. <code>Exchange and send $$ b\prime $$ to Alice</code></p>
+
+<p><code>end</code></p>
+
+<p><strong><em>Alice&rsquo;s Procedure Cntd:</em></strong> <br/>
+<strong>5.</strong><br/>
+<code>if $$ a\prime=b\prime $$ then</code></p>
+
+<blockquote><p><code>start over with Alice's optional step from above.</code></p></blockquote>
+
+<p><code>else</code></p>
+
+<blockquote><p><code>$$ k\leftarrow ab\prime\mod{1} $$</code></p></blockquote>
+
+<p><code>end</code></p>
+
+<p><strong><em>Bob&rsquo;s Procedure Cntd:</em></strong><br/>
+<strong>5.</strong><br/>
+<code>if $$ a\prime=b\prime $$ then</code></p>
+
+<blockquote><p><code>start over with Bob's optional step from above.</code></p></blockquote>
+
+<p><code>else</code></p>
+
+<blockquote><p><code>$$ k\leftarrow ba\prime\mod{1} $$</code></p></blockquote>
+
+<p><code>end</code></p>
+
+<p><strong><em>Both:</em></strong><br/>
+<code>return $$ k $$</code></p></blockquote>
+
+<p>The protocol is dependent on a function $$ C_x $$ having the property of being  <em>one-way</em> in that it is easy to calculate forwards but not reversibly; this means that the $$ C_x(a) $$ for any $$ x\in S $$ should be easy to determine a solution, while on the other hand, given $$ c $$ for any $$ x\in S $$ it should be difficult to solve for the $$ a $$ in $$ C_x(a) $$. It should also be <em>symmetric</em>, this states that:</p>
+
+<p style="text-align:center;">$$ C_{C_x(b)}(a)=C_{C_x(a)}(b) $$</p>
+
+<hr />
+
+<h3>Quantum Computing</h3>
+
+<hr />
+
+<p><strong><em>“Is there a (single) universal computing device which can efficiently simulate any other physical system?”</em></strong></p>
+
+<p>this is the question that faced researchers and scientists such as Richard Feynman before the introduction of quantum computers. The quantum computer was the answer to the question and remains the most promising system at helping achieve this task. For the purpose of the Discrete Log Problem and Shor&rsquo;s Factoring Algorithm, quantum computation is important as it allows us to bring NP problems into the realm of BQP. BQP is a new class of problems in which the solution can be found and verified in a reasonable amount of time using the advantages lent by quantum circuitry and algorithms. The reason this is possible using Shor&rsquo;s Algorithm is it turns the NP factoring problem into a P period finding problem. While it is well known this works for classical factoring problems where in primes are carefully chosen, it is not yet determined whether it can easily solve cases of the discrete logarithm problem:</p>
+
+<blockquote><p>I will recount a short summary of the <strong>Discrete Logarithm Problem</strong>:</p>
+
+<p><em>Let 𝑔 be a generator of a group 𝔾 of prime order 𝑞. Given 𝑦=𝑔𝑘∈𝔾, find the value of 𝑘:</em><br/>
+1. Consider the bivariate function 𝑓:(𝑥1,𝑥2)↦𝑔𝑥1𝑦𝑥2<br/>
+2. The period finding routine finds a pair (𝜔1,𝜔2) such that 𝑓(𝑥1+𝜔1,𝑥2+𝜔2)=𝑓(𝑥1,𝑥2)<br/>
+3. The solution to the discrete logarithm problem is then given by 𝑘=−𝜔1/𝜔2mod𝑞<br/>
+4. Indeed, one has 𝑓(𝑥1+𝜔1,𝑥2+𝜔2)=𝑓(𝑥1,𝑥2)⟺𝑔𝜔1𝑦𝜔2=1𝔾⟺𝑔𝜔1+𝑘𝜔2=1𝔾 and thus 𝜔1+𝑘𝜔2≡0(mod𝑞).</p></blockquote>
+
+<hr />
+
+<h3>The Quantum Fourier Transform</h3>
+
+<hr />
+
+<p>TBD</p>
+
+<hr />
+
+<h3>Shor&rsquo;s Quantum Factoring Algorithm</h3>
+
+<hr />
+
+<p>Shor’s algorithm is famous for factoring integers in polynomial time.  The best-developed classical algorithms require superpolynomial time to factor the product of two primes; On the other hand the widely used cryptosystem, RSA, relies on factoring being impossible for large enough integers.</p>
+
+<p>In this paper, I will focus on the quantum part of Shor’s algorithm that could potentially be put into use down the line when more useful quantum computer&rsquo;s are available , which solves the problem of &lsquo;period finding&rsquo;. Since a factoring problem can be turned into a period finding problem in polynomial time, an efficient period finding algorithm can be used to factor integers efficiently too. If I can compute the period of $$(a^x)*mod(N)$$ efficiently, then we can also efficiently factor.</p>
+
+<blockquote><h4>Period Finding</h4>
+
+<p>I will first look at the periodic function and equation:</p>
+
+<p style="text-align:center;">$$ f(x) = a^x \bmod{N}$$</p>
+
+<p>where $a$ and $N$ are positive integers, $$ a $$ is less than $$ N $$, and they have no common factors. The period, or order ($$ r $$), is the smallest (non-zero) integer such that:</p>
+
+<p style="text-align:center;">$$a^r \bmod N = 1 $$</p>
+
+<p>below is an example of this function plotted onto a graph. The lines between each of the points are to help represent the periodicity and do not show the intermediate values along the x-axis i.e. they are not a direct slope correlation to the values in computation.</p>
+
+<p><figure><img src="archimedes://modgroupshorex.png" alt="3^16 mod 17" /><figcaption>3<sup>16</sup> mod 17</figcaption></figure></p>
+
+<p>Shor’s Answer was to use quantum phase estimation on the unitary operand:</p>
+
+<p style="text-align:center;">$$ U|y\rangle \equiv |ay \bmod N \rangle $$</p>
+
+<p>I will work out what an eigenstate of U might look like. If I started in the state $$ |1\rangle $$, I can see that each successive application of U will multiply the state of the register by $$ a \pmod N$$, and after $$r$$ applications, I will arrive at the state $$ |1\rangle $$ again. For example with $$ a = 3 $$ and $$ N = 17 $$:</p>
+
+<p style="text-align:center;">$$ U|1\rangle = |3\rangle $$<br/>
+$$ U^2|1\rangle = |9\rangle $$<br/>
+$$ U^3|1\rangle = |27\rangle $$<br/>
+$$ \vdots $$<br/>
+$$ U^{(r-1)}|1\rangle = |12\rangle $$<br/>
+$$ U^r|1\rangle = |1\rangle $$</p>
+
+<p>So a superposition of all states inside of this cycle ($$|u_0\rangle$$$ $) would end up being an eigenstate of  $$$U$$:</p>
+
+<p style="text-align:center;">$$|u_0\rangle = \tfrac{1}{\sqrt{r}}\sum_{k=0}^{r-1}{|a^k \bmod N\rangle} $$</p>
+
+<p>This eigenstate only has an eigenvalue of 1, which is not of interest to us. A much more relevant eigenstate could be one in which the phase is different or varied for each of these computational basis states. To do this, I will look at the case where the phase of the $$ k $$th state is proportional to that of $$ k $$:</p>
+
+<p style="text-align:center;">$$ |u_1\rangle = \tfrac{1}{\sqrt{r}}\sum_{k=0}^{r-1}{e^{-\tfrac{2\pi i k}{r}}|a^k \bmod N\rangle}$$<br/>
+$$ U|u_1\rangle = e^{\tfrac{2\pi i}{r}}|u_1\rangle $$</p>
+
+<p>This eigenvalue is of particular interest seeing as it contains $$ r $$. As a matter of fact, $$ r $$ has to be included to ensure the phase differences between the $$ r $$ computational basis states are equal. To generalize this even more, I can multiply $$ s $$, by this phase difference, which will show up in the eigenvalue:</p>
+
+<p style="text-align:center;">$$ |u_s\rangle = \tfrac{1}{\sqrt{r}}\sum_{k=0}^{r-1}{e^{-\tfrac{2\pi i s k}{r}}|a^k \bmod N\rangle} $$<br/>
+$$ U|u_s\rangle = e^{\tfrac{2\pi i s}{r}}|u_s\rangle $$</p>
+
+<p>I now have a unique eigenstate for each integer value of $$ s $$ where $$ 0 \leq s \leq r-1 $$ If I sum up all these eigenstates, the different phases cancel out all computational basis states except $$ |1\rangle $$:</p>
+
+<p style="text-align:center;">$$ \tfrac{1}{\sqrt{r}}\sum_{s=0}^{r-1} |u_s\rangle = |1\rangle $$</p>
+
+<p>Since the computational basis state $$ |1\rangle $$ is a superposition of these eigenstates, which means if I perform a quantum phase estimation algorithm on $$ U $$ using the state $$ |1\rangle $$, I will measure a phase of:</p>
+
+<p style="text-align:center;">$$ \phi = \frac{s}{r} $$</p>
+
+<p>Where $$ s $$ is a random integer between $$ 0 $$ and $$ r-1 $$. I finally use the continued fractions algorithm on $$ \phi $$ to find $$ r $$.</p></blockquote>
+
+</body>
+</html>

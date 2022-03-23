@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan&family=Libre+Baskerville&display=swap');
+
+html, body {
+    max-height: 100%;
+    max-width: 100%;
+    background-color: rgb(21, 22, 26);
+    margin: 0px;
+    padding: 0px;
+}
+
+@media screen and (max-width: 800px) {
+    html {
+        height: 100%;
+        width: 100%;
+        background-color: rgb(45, 47, 51);
+    }
+}
+
+@media screen and (max-width: 400px) {
+    html, body {
+        max-height: 100%;
+        max-width: 100%;
+        background-color: rgb(21, 22, 26);
+        margin: 0px;
+        padding: 0px; 
+    }
+}
+
+.container {
+    display: grid;
+
+    grid-template-areas:
+        "header header header"
+        "nav content side"
+        "footer footer footer";
+
+    grid-template-columns: 10% 75% 15%;
+    grid-template-rows: 20% 70% 10%;
+
+    margin: 1%;
+
+}
+
+header {
+    display: flex;
+    flex-flow: row nowrap;
+    grid-area: header;
+    width: 100%;
+    height: 100%;
+    border-radius: 7px;
+    align-content: center;
+    justify-content: center;
+}
+
+nav {
+    grid-area: nav;
+    height: 100%;
+    width: 100%;
+    color:ghostwhite;
+    padding: 1%;
+    margin: 1%;
+    margin-top: 50%;
+    font-size: 10px;
+}
+
+ul.site-nav {
+    list-style: none;
+    height: auto;
+    width: 100%;
+    padding: 6%;
+    font-size: 70%;
+    background-color: rgb(45, 47, 51, 0.4);
+}
+
+li {
+    margin: 1%;
+    padding: 2%;
+    padding-top: 15%;
+    padding-bottom: 15%;
+    text-align: center;
+    height: 20%;
+}
+
+a {
+    color: springgreen;
+}
+
+main {
+    grid-area: content;
+    width: 100%;
+    height:100%;
+    padding: 5%;
+    margin: 4%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+form#input-text {
+    padding: 1%;
+    margin: 2%;
+    height: 40%;
+    width: 80%;
+}
+
+textarea.plaintext-form {
+    width: 100%;
+    height: 40%;
+    cursor: text;
+    margin-bottom: 2%;
+}
+
+input {
+    margin-bottom: 20%;
+}
+
+section.cipher-return {
+    width: 80%;
+    height: 50%;
+    padding: 1%;
+    margin: 2%;
+    color: ghostwhite;
+}
+
+section.cipher-return h4 {
+    font-family: 'League Spartan', sans-serif;
+    color: seashell;
+    width: 100%;
+    text-align:center;
+}
+
+p {
+    background-color: rgb(45, 47, 51);
+    border-radius: 7px;
+    width: 100%;
+    height: 50%;
+    margin: 1%;
+    padding: 1%;
+}
+
+p#output-text {
+    font-family: 'Libre Baskerville', serif;
+    width: 100%;
+    height: 100%;
+}
+
+aside {
+    grid-area: side;
+    width: 100%;
+    height: 100%;
+}
+
+footer {
+    grid-area: footer;
+    color: ghostwhite;
+    justify-content: center;
+    margin: 3%;
+    padding: 3%;
+}
+
+section#cipher-info {
+    margin: 4%;
+    padding: 4%;
+    text-align: center;
+}
+
+form#contact-me {
+    color: silver;
+    font-family: 'Libre Baskerville', sans-serif;
+    text-align: center;
+    padding: 0.5%;
+    margin: 0.5%;
+}
+
+img#cipher-icon {
+    margin: 1%;
+    max-width: 20%;
+    max-height: 20%;
+}
+
+img#teapot-ad {
+    max-width: 90%;
+    max-height: 90%;
+    height: 90%;
+    width: auto;
+    padding: 5%;
+    margin: 3%;
+    margin-top: 40%;
+    padding-left: 0%;
+    border-radius: 15px;
+}
+
+h1.site-title {
+    text-align: center;
+    font-family: 'League Spartan', sans-serif;
+    color: seashell;
+    margin: 1%;
+}
+
+h4#machine-title {
+    text-align: center;
+    font-family: 'League Spartan', sans-serif;
+    color: seashell; 
+}
+
+i {
+    margin: 2%;
+    padding: 2%;
+}
+
+em.greentext {
+    color:springgreen;
+    font-style: normal;
+}

@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Raleway&family=ZCOOL+QingKe+HuangYou&display=swap');
+
+html {
+    background-color: #0b181e;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+main {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.spacer {
+    aspect-ratio: 900/250;
+    width: 100%;
+    height: fit-content;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size:cover;
+}
+
+.layer1 {
+    background-image: url('../art/minecraft-top-backgr.svg');
+}
+
+h1.titletext {
+    font-family:'Raleway', sans-serif;
+    display: flexbox;
+    position: absolute;
+    text-align:center;
+    width: 100%;
+    color: ghostwhite;
+}
+
+h3 {
+    font-family: 'Raleway', sans-serif;
+    color: gainsboro;
+    padding: 2%;
+    font-size: 22px;
+    text-align: center;
+}
+
+p {
+    position: relative;
+    display: flexbox;
+    font-family: 'Libre Baskerville', serif;
+    align-self: flex-start;
+    justify-self: flex-start;
+    text-align:left;
+    color: ghostwhite;
+    width: auto;
+    padding: 2%;
+    background: rgba(0,0,0,0.4);
+    border-radius: 20px;
+}

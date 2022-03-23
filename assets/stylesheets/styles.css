@@ -1,0 +1,33 @@
+div.navbar{
+    width: 100%;
+    height: fit-content;
+    background-color: rgba(0,0,0,0.4);
+    border-bottom-right-radius: 20px;
+    display: absolute;
+    position:absolute;
+    top: 0;
+    left:0; 
+}
+
+ul.site-links {
+    list-style:none;
+    text-align: center;
+}
+
+li {
+    background-color: rgba(1,1,1,0.4);
+    height:100%;
+    padding: 1%;
+    border-left: 2px;
+    border-right: 2px;
+    border-color: dimgray;
+    display: inline-flex;
+    justify-content: space-around;
+    padding-left: 2%;
+    text-align: center;
+    font-family: 'Raleway', sans-serif;
+}
+
+a {
+    color: gainsboro;
+}

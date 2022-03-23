@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/assets/scripts/rot13.js"></script>
+    <link rel="stylesheet" href="/assets/stylesheets/rot13.css" media="screen">
+    <title>ROT13 Cipher Machine</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <!-- Header content -->
+            <h1 class="site-title">The <em class="greentext">ROT13</em> Cipher Machine.</h1>
+        </header>
+        <nav role="navigation">
+            <ul class="site-nav">
+                <!-- Create a dynamic site nav bar function that affects this area -->
+                <li><a href="/index.html"><i><img id="cipher-icon" src="/assets/art/home-icon.svg"></i><br>Homepage</a></li>
+                <li><a href="/assets/documents/Cryptography/"><i><img id="cipher-icon" src="/assets/art/crypto-icon.svg"></i><br>Cryptography</a></li>
+                <li><a href="/cs212/homework"><i><img id="cipher-icon" src="/assets/art/homework-icon.svg"></i><br>Homework</a></li>
+                <li><a href="/assets/documents/minecraft.html"><i><img id="cipher-icon" src="/assets/art/minecraft-icon.svg"></i><br>Minecraft</a></li>
+            </ul>
+        </nav>
+        <main role="main">
+            <!-- cipher input form -->
+            <form id="input-text">
+                <h4 id="machine-title">Plaintext/Ciphertext:</h4> 
+                <textarea class="plaintext-form" type="text" placeholder="Type" id="main_text"></textarea><br>
+                <input class="encrypt_button" type="button" onclick="rot13()" value="Encrypt/Decrypt">
+            </form>
+
+            <!-- cipher return -->
+            <section class="cipher-return">
+                <h4 id="output-title">Output:</h4>
+                <p id="output_text"></p>
+            </section>
+        </main>
+        <aside>
+            <!-- Mother of god, please forgive me -->
+            <a href="https://www.amazon.com/Sweejar-Porcelain-Teapot-Infuser-Teaware/dp/B07RHT8BQX/ref=sr_1_9?crid=2YQNH3BHP7DW2&keywords=teapot&qid=1647310910&sprefix=teapo%2Caps%2C245&sr=8-9&th=1">
+                <img id="teapot-ad" alt="A sick ass teapot" title="sick ass teapot" src="https://m.media-amazon.com/images/I/51vODEGu2CL._AC_SL1100_.jpg">
+            </a>
+        </aside>
+        <footer role="contentinfo">
+            <!-- Footer content -->
+            <section id="cipher-info">
+                The ROT13 Algorithm is a symmetric cipher algorithm; simply put:
+                <br><br>
+                <code>
+                    ROT13(plaintext) = ciphertext, rot13(ciphertext) = plaintext 
+                </code>
+                <br><br>
+                Try it out yourself for some simple text obfuscation!
+            </section>
+            <!-- contact form -->
+            <form id="contact-me">
+                <address>
+                    email me at <a href="mailto:antonhibl11@gmail.com" class="contact-info">antonhibl11@gmail.com</a>
+                </address>
+            </form>
+			<section id="addendum">
+				<h4>Addendum</h4> 
+				<p>
+					I used an explicit css grid layout using a template with various names for identifiers; after this I could simply use this container div to hold all of my sections that would need to be implemented for a "Holy Grail" layout. Once I filled in these sections it was a matter of assigning their identifiers with css in order to place them in my grid. After this I used dynamic styling with percentages to ensure that my page would also adapt well to smaller screens such as phones. I also utilized a media screen selector query in order to match the screen size with a respectable page sizing values I also found the navbar became cramped on mobile when using text to identify my links, therefore I changed these to be icons with much smaller text alongside in order so that they fit better especially when viewing on smaller screens, I simply wrapped the icons in an address element to ensure the linking wrapped correctly. Next I implemented my Javascript which wasnt more than a function which responds to an input button I placed in my page which would read text from one text area element and then encipher it and placing the output in a defined section below. This was easily handled by simple Javascript where I could identify an html element by it's ID and then gather or replace the value of the inner HTML by reassignments. After this I placed an image linking to an amazon product in my aside with some styling to make it look good. Finally I placed a simple description of what the javascript does down below with some styled pseudo-code to go with, another html form which lets the user email me, and lastly this addendum was added to explain my design choices.
+				</p> 
+			</section>
+        </footer>
+    </div>      
+</body>
+</html>
