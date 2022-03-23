@@ -1,0 +1,24 @@
+{
+    "title" : "Transitioned my server to use gorilla/mux",
+    "number" : 3,
+    "timestamp": "Tuesday, March 22nd, 8:41 PM",
+    "main": [
+        "I transitioned to using the <a href=\"https://www.gorillatoolkit.org/\">Gorilla Toolkit</a>",
+        ", hopefully this will help me to incorporate more user authentication within my server, add",
+        "capabilities for web sockets, and even incorporate rust via web assembly. Overall it gives me",
+        "a more fleshed out way of building handlers and dynamic elements in my web design portfolio. I",
+        "already built up a basic blog but I want to include a web socket function to the server which",
+        "would allow for me to incorporate a rust game in my browser while running concurrently with go",
+        "and utilizing full duplex communications to update game states quickly. I am going to spend the",
+        "time where I am not busy building these elements by cleaning and refining the main UI elements",
+        "in my site.<br><br>I also just completely updated my github profile to clean it up and appear",
+        "more professional. I am hoping I can incorporate some git actions in the future which pull my most",
+        "recent blog posts dynamically from this server and then display those somewhere in my github as links",
+        "to visit; on a similar note I plan on updating and releasing more blog posts on my Medium.com profile;",
+        "I use this site to read a lot of other posts and figure it will help me learn to explain my own coding",
+        "process when I build things like HTTP servers, hacking tools, and quantum computing scripts. I may",
+        "post more generalized tutorials for basic language concepts too however I feel like others do a much",
+        "better job than I ever would so I will most likely just leave it for them and focus on the stuff I",
+        "like best."
+    ]
+}
